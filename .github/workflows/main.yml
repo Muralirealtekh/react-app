@@ -16,7 +16,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18'
+        node-version: '14'
 
     - name: Install dependencies
       run: npm install
@@ -27,8 +27,7 @@ jobs:
     - name: Extract current version
       id: extract_version
       run: |
-        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-        echo "Latest tag: $latest_tag"
+        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null)
         if [ -z "$latest_tag" ]; then
           new_version="v1.0.0"
         else
