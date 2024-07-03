@@ -1,4 +1,4 @@
-name: Build and Push 
+name: Build and Push React App to Docker Hub
 
 on:
   push:
@@ -11,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '18'
 
     - name: Install dependencies
       run: npm install
@@ -27,7 +27,7 @@ jobs:
     - name: Extract current version
       id: extract_version
       run: |
-        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null)
+        latest_tag=$(git tag | sort -V | tail -n 1)
         if [ -z "$latest_tag" ]; then
           new_version="v1.0.0"
         else
@@ -66,10 +66,3 @@ jobs:
 
     - name: Push Docker image to Docker Hub
       run: docker push ${{ secrets.DOCKER_USERNAME }}/testpush:${{ env.new_version }}
-
-    - name: Create new git tag
-      run: |
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
-        git tag ${{ env.new_version }}
-        git push origin ${{ env.new_version }}
