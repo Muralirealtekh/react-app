@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,6 +15,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.G_TOKEN }}
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -27,10 +32,8 @@ jobs:
     - name: Extract current version
       id: extract_version
       run: |
-        # Fetch tags to ensure we have them locally
         git fetch --tags
         
-        # Get the latest tag
         latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
         
         if [ -z "$latest_tag" ]; then
@@ -40,7 +43,6 @@ jobs:
           echo "Current version: $current_version"
           IFS='.' read -r major minor patch <<< "$current_version"
 
-          # Determine the type of change
           commits=$(git log --oneline $(git describe --tags --abbrev=0) 2>/dev/null || echo "")
           if echo "$commits" | grep -q "BREAKING CHANGE:"; then
             major=$((major + 1))
@@ -71,7 +73,6 @@ jobs:
 
     - name: Push Docker image to Docker Hub
       run: docker push ${{ secrets.DOCKER_USERNAME }}/testpush:${{ env.new_version }}
-
 
     - name: Create new git tag
       run: |
