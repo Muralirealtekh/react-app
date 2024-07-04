@@ -1,4 +1,4 @@
-name: Build and Push
+name: Build and Push React App to Docker Hub
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18'
+        node-version: '14'
 
     - name: Install dependencies
       run: npm install
@@ -27,7 +27,12 @@ jobs:
     - name: Extract current version
       id: extract_version
       run: |
-        latest_tag=$(git tag | sort -V | tail -n 1)
+        # Fetch tags to ensure we have them locally
+        git fetch --tags
+        
+        # Get the latest tag
+        latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null)
+        
         if [ -z "$latest_tag" ]; then
           new_version="v1.0.0"
         else
@@ -36,7 +41,7 @@ jobs:
           IFS='.' read -r major minor patch <<< "$current_version"
 
           # Determine the type of change
-          commits=$(git log --oneline `git describe --tags --abbrev=0`..HEAD)
+          commits=$(git log --oneline $(git describe --tags --abbrev=0)..HEAD)
           if echo "$commits" | grep -q "BREAKING CHANGE:"; then
             major=$((major + 1))
             minor=0
@@ -66,3 +71,18 @@ jobs:
 
     - name: Push Docker image to Docker Hub
       run: docker push ${{ secrets.DOCKER_USERNAME }}/testpush:${{ env.new_version }}
+
+    - name: Create new git tag
+      run: |
+        git config --global user.name "murail"
+        git config --global user.email "murali.realtekh@gmail.com"
+        git tag ${{ env.new_version }}
+        git push origin ${{ env.new_version }}
+
+    - name: Commit version bump
+      run: |
+        git config --global user.name "murali"
+        git config --global user.email "murali.realtekh@gmail.com"
+        git add .
+        git commit -m "chore: bump version to ${{ env.new_version }}"
+        git push origin main
