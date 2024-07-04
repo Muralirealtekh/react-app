@@ -75,15 +75,15 @@ jobs:
 
     - name: Create new git tag
       run: |
-        git config --global user.name "murail"
-        git config --global user.email "murali.realtekh@gmail.com"
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
         git tag ${{ env.new_version }}
         git push origin ${{ env.new_version }}
 
     - name: Commit version bump
       run: |
-        git config --global user.name "murali"
-        git config --global user.email "murali.realtekh@gmail.com"
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
         git add .
         git commit -m "chore: bump version to ${{ env.new_version }}"
         git push origin main
