@@ -3,7 +3,7 @@ name: Build and Push React App to Docker Hub
 on:
   push:
     branches:
-      - main
+      - main---test
 
 permissions:
   contents: write
