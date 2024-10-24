@@ -1,2 +1,26 @@
-Hi devops
-hloooo
+root@uat:/naveen/gitrepo/react-app# touch devops.txt
+root@uat:/naveen/gitrepo/react-app# ls
+devops.txt  Dockerfile  murali.txt  naveen.txt  package.json  package-lock.json  public  README.md  src
+root@uat:/naveen/gitrepo/react-app# git checkout test
+Switched to branch 'test'
+Your branch is up to date with 'origin/test'.
+root@uat:/naveen/gitrepo/react-app# git checkout uat
+Switched to branch 'uat'
+Your branch is up to date with 'origin/uat'.
+root@uat:/naveen/gitrepo/react-app# git add .
+root@uat:/naveen/gitrepo/react-app# git commit -m "small changes"
+[uat 201b84d] small changes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 devops.txt
+root@uat:/naveen/gitrepo/react-app# git push -u origin uat
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (2/2), 248 bytes | 248.00 KiB/s, done.
+Total 2 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To https://github.com/Muralirealtekh/react-app.git
+   b5bed7a..201b84d  uat -> uat
+Branch 'uat' set up to track remote branch 'uat' from 'origin'.
+root@uat:/naveen/gitrepo/react-app# 
